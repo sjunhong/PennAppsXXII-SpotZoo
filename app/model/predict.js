@@ -24,7 +24,7 @@ const makePredictions = async (imageBuffer) => {
     console.log('predict output:', output);
     return output;
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
   }
 };
 

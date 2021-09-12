@@ -1,4 +1,5 @@
 const makePredictions = require('./model/predict');
+const firestoreUpload = require('./lib/firestore-upload');
 const ipfsAPI = require('ipfs-api');
 const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' });
 
@@ -14,24 +15,31 @@ exports.AnimalReportUseCase = async (inputDto) => {
     const buffer = Buffer.from(inputDto.file.buffer);
     const ipfsResult = await ipfs.add(buffer);
     const predict = await makePredictions(inputDto.file.buffer);
-    console.log('prediction output: ', predict);
 
-    const hashCode = ipfsResult[0].hash;
+    const imageHash = ipfsResult[0].hash;
     const animalName = predict[0].className.split(', ')[0];
     const score = predict[0].probability;
     console.log(`
     animalName: ${animalName},
     score: ${score},
-    hashCode: ${hashCode},
+    imageHash: ${imageHash},
     `);
+
     output = {
-      animal_name: animalName,
+      animalName: animalName,
+      imageHash: imageHash,
       score: score,
-      hash_code: hashCode,
+      lat: parseFloat(inputDto.lat),
+      lng: parseFloat(inputDto.lng),
+      numOfAnimals: parseInt(inputDto.numOfAnimals),
+      comments: inputDto.comments,
+      date: inputDto.date,
     };
+    const result = await firestoreUpload(output);
+    console.log('db output: ', result);
     console.log('usecase output: ', output);
     return output;
   } catch (error) {
-    new Error(error);
+    throw new Error(error);
   }
 };

@@ -1,11 +1,11 @@
 const express = require('express');
 const imageUpload = require('./lib/image-upload');
-const controller = require('./animal-report.controller');
+const Controller = require('./animal-report.controller');
 const cors = require('cors');
 
 const app = express();
 
-const PORT = 3000;
+const PORT = 8080;
 const corsOption = {
   origin: (origin, callback) => {
     if (!origin) {
@@ -28,9 +28,12 @@ app.get('/health', (request, response) => {
   return response.status(200).send('server healthy');
 });
 app.post('/image', imageUpload, (req, res) => {
-  controller.AnimalReport(req, res);
+  Controller.AnimalReport(req, res);
 });
 
-app.listen(PORT, '127.0.0.1', () => {
+app.get('/', (request, response) => {
+  return response.status(200).send('server healthy');
+});
+app.listen(PORT, () => {
   console.log(`app running in port: ${PORT}`);
 });

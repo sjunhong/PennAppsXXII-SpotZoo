@@ -1,20 +1,39 @@
 const fs = require('firebase-admin');
-
-const serviceAccount = require('../../config/spotzoo-firebase-adminsdk-tl6k3-99ea8cdc48.json');
-
+const serviceAccount = require('../config/spotzoo-firebase-adminsdk-tl6k3-99ea8cdc48.json');
 fs.initializeApp({
   credential: fs.credential.cert(serviceAccount),
 });
+const firestoreUpload = async ({
+  animalName,
+  imageHash,
+  score,
+  lat,
+  lng,
+  numOfAnimals,
+  comments,
+  date,
+}) => {
+  try {
+    db = fs.firestore();
 
-db = fs.firestore();
+    const animalsDb = db.collection('Animals');
+    const doc = animalsDb.doc(`${imageHash}`);
 
-exports.firestoreUpload = async (animal_name, image_hash, score) => {
-  const animalsDb = db.collection('Animals');
-  const doc = animalsDb.doc(`${image_hash}`);
-
-  await doc.set({
-    animal_name: animal_name,
-    image_hash: image_hash,
-    score: score,
-  });
+    const result = await doc.set({
+      animal_name: animalName,
+      image_hash: imageHash,
+      score: score,
+      lat: lat,
+      lng: lng,
+      num_of_animals: numOfAnimals,
+      comments: comments,
+      date: date,
+    });
+    console.log(result);
+    return result;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
+
+module.exports = firestoreUpload;
