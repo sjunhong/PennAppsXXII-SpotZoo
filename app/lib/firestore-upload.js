@@ -29,7 +29,6 @@ const firestoreUpload = async ({
       comments: comments,
       date: date,
     });
-    console.log(result);
     return result;
   } catch (error) {
     throw new Error(error);

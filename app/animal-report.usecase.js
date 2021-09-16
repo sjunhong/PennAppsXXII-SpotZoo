@@ -36,8 +36,6 @@ exports.AnimalReportUseCase = async (inputDto) => {
       date: inputDto.date,
     };
     const result = await firestoreUpload(output);
-    console.log('db output: ', result);
-    console.log('usecase output: ', output);
     return output;
   } catch (error) {
     throw new Error(error);

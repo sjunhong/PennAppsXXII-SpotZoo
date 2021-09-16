@@ -35,7 +35,6 @@ const loadModel = async (img) => {
 
   // classify
   const output = await model.classify(img);
-  console.log('loadModel return');
   return output;
 };
 
